@@ -1,10 +1,9 @@
--- [[ 1. CONFIGURATION ]]
+      -- [[ 1. CONFIGURATION ]]
 local WhitelistedUsers = {
     -- Pwede mo i-set gamit ang "m" (minutes), "h" (hours), "d" (days)
-    ["rip_senku50"]   = "2m",   -- 1 Minute Trial
+    ["rip_senku50"]   = "1m",   -- 1 Minute Trial
     ["gianroil3"] = "1m",  -- 24 Hours
-    [""]  = -,     -- Lifetime Access
-  [""]   = "",
+    ["John_Zedrick"]  = -1,     -- Lifetime Access
 }
 
 local MainScript = "https://raw.githubusercontent.com/dezqpal/Primo/refs/heads/main/v2paidObf.lua"
