@@ -2,7 +2,7 @@
 local WhitelistedUsers = {
     -- Pwede mo i-set gamit ang "m" (minutes), "h" (hours), "d" (days)
     ["rip_senku50"]   = "1m",   -- 1 Minute Trial
-    ["gianroil3"] = "1m",  -- 24 Hours
+    ["ingella_199"] = "10h",  -- 24 Hours
     ["primobns21"]  = -1,     -- Lifetime Access
 }
 
