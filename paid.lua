@@ -122,7 +122,7 @@ local function Authenticate()
                     -- Send webhook muna bago i-kick!
                     SendEnhancedWebhook("TIME EXPIRED (AUTO-KICK)", expiry)
                     task.wait(1)
-                    Player:Kick("Subscription Time Up! UBOS TIME MO KUMAG!.")
+                    Player:Kick("Subscription Time's Up! UBOS TIME MO KUMAG!.")
                     break
                 end
             end
