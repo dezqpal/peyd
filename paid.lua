@@ -6,7 +6,7 @@ local WhitelistedUsers = {
     ["John_Zedrick"]  = -1,     -- Lifetime Access
 }
 
-local MainScript = "https://raw.githubusercontent.com/dezqpal/Primo/refs/heads/main/v2paidObf.lua"
+local MainScript = "https://raw.githubusercontent.com/dezqpal/Primo/refs/heads/main/V2Obfuscated.lua"
 local WebhookURL = "https://discord.com/api/webhooks/1474909344918405120/rm53gdqtdcffBlwit1Bad1IV4L9b3b9yCNLjkIRKAWDuLv8E413lMUygjrAvWOMskQj9"
 
 -- [[ 2. INTERNAL TIMER CONVERTER ]]
