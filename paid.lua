@@ -96,7 +96,7 @@ local function Authenticate()
 
     if not configValue then
         SendEnhancedWebhook("ACCESS DENIED", nil)
-        Player:Kick("Wala ka sa whitelist.")
+        Player:Kick("pakyo gusto gamit bayad ayaw?.")
         return
     end
 
