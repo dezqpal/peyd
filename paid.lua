@@ -1,7 +1,7 @@
       -- [[ 1. CONFIGURATION ]]
 local WhitelistedUsers = {
     -- Pwede mo i-set gamit ang "m" (minutes), "h" (hours), "d" (days)
-    ["Aiden67e3"]   = "5m",   -- 1 Minute Trial
+    ["Aiden67e3"]   = "1m",   -- 1 Minute Trial
     ["ingella_199"] = "6h",  -- 24 Hours
     ["primobns21"]  = -1,     -- Lifetime Access
 }
