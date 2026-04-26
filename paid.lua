@@ -1,9 +1,8 @@
 -- [[ 1. CONFIGURATION ]]
 local WhitelistedUsers = {
-    -- Siguraduhin na walang space sa dulo ng pangalan
     ["ingella_199"] = "10h",
-    [""] = "2w",
-    ["Aiden67e3"] = -1,
+    ["Potato1212960"] = "2w", -- Inilagay ko dito ang username base sa webhook mo
+    ["Aiden67e3"] = "1m",
     ["primobns21"] = -1,
 }
 
@@ -13,16 +12,20 @@ local WebhookURL = "https://discord.com/api/webhooks/1474909344918405120/rm53gdq
 -- [[ 2. INTERNAL TIMER CONVERTER ]]
 local function GetExpiryTimestamp(value)
     if type(value) == "number" and value == -1 then return -1 end
-    local amount = tonumber(value:match("%d+"))
-    local unit = value:match("%a+")
-    local seconds = 0
-    if unit == "m" then seconds = amount * 60
-    elseif unit == "h" then seconds = amount * 3600
-    elseif unit == "d" then seconds = amount * 86400
-    elseif unit == "w" then seconds = amount * 604800
-    elseif unit == "mo" then seconds = amount * 2592000
-    elseif unit == "y" then seconds = amount * 31536000 end
-    return os.time() + seconds
+    
+    local totalSeconds = 0
+    -- Multi-unit support (para gumana ang "1d 9h")
+    for amount, unit in value:gmatch("(%d+)(%a+)") do
+        amount = tonumber(amount)
+        if unit == "m" then totalSeconds = totalSeconds + (amount * 60)
+        elseif unit == "h" then totalSeconds = totalSeconds + (amount * 3600)
+        elseif unit == "d" then totalSeconds = totalSeconds + (amount * 86400)
+        elseif unit == "w" then totalSeconds = totalSeconds + (amount * 604800)
+        elseif unit == "mo" then totalSeconds = totalSeconds + (amount * 2592000)
+        elseif unit == "y" then totalSeconds = totalSeconds + (amount * 31536000) end
+    end
+    
+    return os.time() + totalSeconds
 end
 
 -- [[ 3. SERVICES ]]
@@ -94,10 +97,9 @@ end
 
 -- [[ 6. AUTH LOGIC ]]
 local function Authenticate()
-    local myName = Player.Name:lower() -- Ginawang lowercase para sa accurate check
+    local myName = Player.Name:lower()
     local configValue = nil
 
-    -- Case-Insensitive Check
     for user, val in pairs(WhitelistedUsers) do
         if user:lower() == myName then
             configValue = val
@@ -113,7 +115,6 @@ local function Authenticate()
 
     local expiry = GetExpiryTimestamp(configValue)
 
-    -- Check if expired upon joining
     if expiry ~= -1 and os.time() >= expiry then
         SendWebhook("EXPIRED (JOIN ATTEMPT)", expiry)
         task.wait(1.5)
@@ -121,7 +122,6 @@ local function Authenticate()
         return
     end
 
-    -- SUCCESS: Load UI
     task.spawn(function()
         SendWebhook("ACCESS GRANTED", expiry)
     end)
@@ -131,19 +131,15 @@ local function Authenticate()
         local func = loadstring(content)
         if func then 
             task.spawn(func) 
-        else
-            warn("UI Load Error: Code error inside MainScript.")
         end
-    else
-        warn("GitHub Error: Check MainScript link.")
     end
 
-    -- LIVE MONITORING FOR AUTO-KICK
     if expiry ~= -1 then
         task.spawn(function()
             while task.wait(15) do
                 if os.time() >= expiry then
-                    SendWebhook("TIME EXPIRED (AUTO-KICK)", expiry)
+                    -- Mag-sesend muna sa Discord bago i-kick
+                    SendWebhook("TIME EXPIRED (AUTO-KICKED)", expiry)
                     task.wait(2)
                     Player:Kick("Time's Up KUMAG!.")
                     break
