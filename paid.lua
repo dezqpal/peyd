@@ -2,7 +2,7 @@
 local WhitelistedUsers = {
     ["ingella_199"] = "10h",
     ["Potato1212960"] = "2w", -- Inilagay ko dito ang username base sa webhook mo
-    ["Aiden67e3"] = "1m",
+    ["Aiden67e3"] = "1y",
     ["primobns21"] = -1,
 }
 
