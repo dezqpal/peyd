@@ -3,7 +3,7 @@ local WhitelistedUsers = {
     -- Siguraduhin na walang space sa dulo ng pangalan
     ["ingella_199"] = "10h",
     [""] = "2w",
-    ["Aiden67e3"] = "1m",
+    ["Aiden67e3"] = "30s",
     ["primobns21"] = -1,
 }
 
