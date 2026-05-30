@@ -112,7 +112,7 @@ SubmitBtn.MouseButton1Click:Connect(function()
         SubmitBtn.Text = "ACCESS GRANTED"
         task.wait(0.5)
         ScreenGui:Destroy()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/dezqpal/peyd/refs/heads/main/PRIVATE/FJSobfuscated"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/dezqpal/peyd/refs/heads/main/MicoObfuscated"))()
     else
         SubmitBtn.Text = "INVALID"
         BtnStroke.Color = Color3.fromRGB(200, 0, 0)
