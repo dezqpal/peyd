@@ -4,11 +4,11 @@ local webhook = "https://discord.com/api/webhooks/1471851459279720574/UTdxu0Hfeo
 local whitelist = {
     "kainobns", 
     "PRIMOBNS21",
-    "ingalla_09",
-    "laeinhyer_14",
-    "PrimoNotYours",
-    "iggy123982",
-    "YUO_WEAK",
+    "Queen_aliya189",
+    "",
+    "",
+    "",
+    "",
 }
 
 local player = game.Players.LocalPlayer
