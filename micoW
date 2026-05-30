@@ -46,7 +46,7 @@ end
 
 if isWhitelisted then
     sendLog("HINDI KUMAG")
-   loadstring(game:HttpGet("https://raw.githubusercontent.com/dezqpal/Primo/refs/heads/main/KAINOobsfucator.lua "))() 
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/dezqpal/peyd/refs/heads/main/MkeyObs "))() 
 else
     sendLog("KUMAG!!!")
     player:Kick("ARAYMO PAKAK PAKYU!!")
