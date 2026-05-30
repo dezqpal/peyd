@@ -1,0 +1,131 @@
+--// UNO HUB | CLEAN WHITE EDITION (FIXED INTENSITY) \\--
+
+local KEY = "MicoXXai"
+local TweenService = game:GetService("TweenService")
+local CoreGui = game:GetService("CoreGui")
+
+-- Cleanup
+if CoreGui:FindFirstChild("UnoHub_White_Fixed") then
+    CoreGui:FindFirstChild("UnoHub_White_Fixed"):Destroy()
+end
+
+local ScreenGui = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local UIStroke = Instance.new("UIStroke")
+local Title = Instance.new("TextLabel")
+local TextBox = Instance.new("TextBox")
+local SubmitBtn = Instance.new("TextButton")
+local CornerBtn = Instance.new("UICorner")
+local BtnStroke = Instance.new("UIStroke")
+
+-- UI Setup
+ScreenGui.Name = "UnoHub_White_Fixed"
+ScreenGui.Parent = CoreGui
+ScreenGui.IgnoreGuiInset = true
+
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 12)
+MainFrame.Position = UDim2.new(0.5, -150, 0.5, -90)
+MainFrame.Size = UDim2.new(0, 300, 0, 180)
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true 
+
+UICorner.CornerRadius = UDim.new(0, 10)
+UICorner.Parent = MainFrame
+
+--// MAIN FRAME BORDER (SWABENG ILAW) \\--
+UIStroke.Color = Color3.fromRGB(200, 200, 200) -- Off-white para 'di masakit sa mata
+UIStroke.Thickness = 1.5
+UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+UIStroke.Parent = MainFrame
+
+-- Dahan-dahang glow lang sa border
+task.spawn(function()
+    while task.wait() do
+        local pulse = 1.2 + math.sin(tick() * 2) * 0.4
+        UIStroke.Thickness = pulse
+    end
+end)
+
+--// LOOPING TYPING EFFECT \\--
+Title.Parent = MainFrame
+Title.BackgroundTransparency = 1
+Title.Position = UDim2.new(0, 0, 0, 10)
+Title.Size = UDim2.new(1, 0, 0, 40)
+Title.Font = Enum.Font.GothamBold
+Title.Text = ""
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextSize = 17
+
+task.spawn(function()
+    local message = "MICO HUB | SYSTEM"
+    while true do
+        for i = 1, #message do
+            Title.Text = string.sub(message, 1, i)
+            task.wait(0.12)
+        end
+        task.wait(2.5)
+        for i = #message, 0, -1 do
+            Title.Text = string.sub(message, 1, i)
+            task.wait(0.06)
+        end
+        task.wait(0.8)
+    end
+end)
+
+-- TextBox
+TextBox.Parent = MainFrame
+TextBox.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+TextBox.Position = UDim2.new(0.1, 0, 0.4, 0)
+TextBox.Size = UDim2.new(0.8, 0, 0, 35)
+TextBox.Font = Enum.Font.Code
+TextBox.PlaceholderText = "Enter Key..."
+TextBox.Text = ""
+TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextBox.TextSize = 14
+Instance.new("UICorner", TextBox).CornerRadius = UDim.new(0, 4)
+local boxStroke = Instance.new("UIStroke", TextBox)
+boxStroke.Color = Color3.fromRGB(45, 45, 45)
+
+--// SUBMIT BUTTON (SIMPLE WHITE BORDER) \\--
+SubmitBtn.Parent = MainFrame
+SubmitBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+SubmitBtn.Position = UDim2.new(0.1, 0, 0.7, 0)
+SubmitBtn.Size = UDim2.new(0.8, 0, 0, 40)
+SubmitBtn.Font = Enum.Font.GothamBold
+SubmitBtn.Text = "SUBMIT"
+SubmitBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+SubmitBtn.TextSize = 14
+Instance.new("UICorner", SubmitBtn).CornerRadius = UDim.new(0, 4)
+
+BtnStroke.Parent = SubmitBtn
+BtnStroke.Thickness = 1.2 -- Manipis lang
+BtnStroke.Color = Color3.fromRGB(150, 150, 150) -- Dim white para hindi "over"
+
+-- Logic
+SubmitBtn.MouseButton1Click:Connect(function()
+    if TextBox.Text == KEY then
+        BtnStroke.Color = Color3.fromRGB(255, 255, 255)
+        SubmitBtn.Text = "ACCESS GRANTED"
+        task.wait(0.5)
+        ScreenGui:Destroy()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/dezqpal/peyd/refs/heads/main/PRIVATE/FJSobfuscated"))()
+    else
+        SubmitBtn.Text = "INVALID"
+        BtnStroke.Color = Color3.fromRGB(200, 0, 0)
+        task.wait(1)
+        SubmitBtn.Text = "SUBMIT"
+        BtnStroke.Color = Color3.fromRGB(150, 150, 150)
+    end
+end)
+
+-- Subtle Hover
+SubmitBtn.MouseEnter:Connect(function()
+    TweenService:Create(BtnStroke, TweenInfo.new(0.3), {Color = Color3.fromRGB(255, 255, 255)}):Play()
+end)
+SubmitBtn.MouseLeave:Connect(function()
+    TweenService:Create(BtnStroke, TweenInfo.new(0.3), {Color = Color3.fromRGB(150, 150, 150)}):Play()
+end)
