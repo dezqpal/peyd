@@ -2700,49 +2700,76 @@ end)
 
 -- Create GUI Elements
 local ScreenGui = Instance.new("ScreenGui")
-local RejoinButton = Instance.new("TextButton")
+local ServerHopButton = Instance.new("TextButton")
 
 -- Properties ng ScreenGui
-ScreenGui.Parent = game:GetService("CoreGui") -- Ilalagay sa CoreGui para hindi mawala basta-basta
-ScreenGui.Name = "MuscleLegendsRejoinGUI"
+ScreenGui.Parent = game:GetService("CoreGui")
+ScreenGui.Name = "MuscleLegendsHopGUI"
 
--- Properties ng Rejoin Button
-RejoinButton.Name = "RejoinButton"
-RejoinButton.Parent = ScreenGui
-RejoinButton.BackgroundColor3 = Color3.fromRGB(255, 60, 60) -- Pulang kulay para madaling makita
-RejoinButton.Position = UDim2.new(0.05, 0, 0.4, 0) -- Nasa kaliwang bahagi ng screen mo
-RejoinButton.Size = UDim2.new(0, 120, 0, 45) -- Sukat ng button
-RejoinButton.Font = Enum.Font.SourceSansBold
-RejoinButton.Text = "REJOIN KUMAG"
-RejoinButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-RejoinButton.TextSize = 10
-RejoinButton.ClipsDescendants = true
+-- Properties ng Server Hop Button
+ServerHopButton.Name = "ServerHopButton"
+ServerHopButton.Parent = ScreenGui
+ServerHopButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255) -- Ginawa kong Blue para maiba naman
+ServerHopButton.Position = UDim2.new(0.05, 0, 0.4, 0)
+ServerHopButton.Size = UDim2.new(0, 120, 0, 45)
+ServerHopButton.Font = Enum.Font.SourceSansBold
+ServerHopButton.Text = "REJOIN KUMAG"
+ServerHopButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ServerHopButton.TextSize = 13
+ServerHopButton.ClipsDescendants = true
 
--- Para maging swabe ang corners (Rounded)
+-- Rounded corners
 local UICorner = Instance.new("UICorner")
 UICorner.CornerRadius = UDim.new(0, 8)
-UICorner.Parent = RejoinButton
+UICorner.Parent = ServerHopButton
 
--- Ang actual na Rejoin Function kapag kinlik ang button
-RejoinButton.MouseButton1Click:Connect(function()
+-- Function para maghanap ng maliit o ibang server (Server Hopper)
+local function ServerHop()
+    local HttpService = game:GetService("HttpService")
     local TeleportService = game:GetService("TeleportService")
     local Players = game:GetService("Players")
-    local LocalPlayer = Players.LocalPlayer
     
-    -- Subukang mag-rejoin sa mismong server (JobId)
-    if #Players:GetPlayers() <= 1 then
-        -- Kung ikaw lang mag-isa sa server, i-teleport ka sa bagong server
-        TeleportService:Teleport(game.PlaceId, LocalPlayer)
-    else
-        -- Kung may ibang tao, babalik ka sa parehong server
-        TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, LocalPlayer)
+    local PlaceId = game.PlaceId
+    local JobId = game.JobId
+    
+    -- API URL para makuha ang listahan ng servers
+    local Url = "https://games.roblox.com/v1/games/" .. PlaceId .. "/servers/Public?sortOrder=Asc&limit=100"
+    
+    local success, result = pcall(function()
+        return HttpService:JSONDecode(game:HttpGet(Url))
+    end)
+    
+    if success and result and result.data then
+        for _, server in ipairs(result.data) do
+            -- Siguraduhing hindi ito ang kasalukuyan mong server at may bakante pa (pero konti lang tao)
+            if server.id ~= JobId and server.playing < server.maxPlayers then
+                -- Dito pwedeng i-filter kung gusto mo ng super small server (halimbawa: mas kaunti sa 5 players)
+                if server.playing <= 5 then
+                    TeleportService:TeleportToPlaceInstance(PlaceId, server.id, Players.LocalPlayer)
+                    return
+                end
+            end
+        end
+        
+        -- Kung walang nahanap na super small server sa unang batch, pasok sa kahit anong ibang server na may slot
+        for _, server in ipairs(result.data) do
+            if server.id ~= JobId and server.playing < server.maxPlayers then
+                TeleportService:TeleportToPlaceInstance(PlaceId, server.id, Players.LocalPlayer)
+                return
+            end
+        end
     end
-end)
+    
+    -- Fallback: Kung nagka-error ang API, i-teleport ka na lang sa random server
+    TeleportService:Teleport(PlaceId, Players.LocalPlayer)
+end
 
+-- I-execute ang function kapag kinlik ang button
+ServerHopButton.MouseButton1Click:Connect(ServerHop)
 
 local Credits = window:AddTab("Credits")
 
-
+Credits:AddLabel("primopinakapogisabuongmundobwakanangshet")
 Credits:AddLabel("             ")
 
 Credits:AddLabel(" UNO KILLING SCRIPT").TextSize = 45
