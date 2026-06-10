@@ -21,7 +21,7 @@ local Settings = {
     NaNSize = true,
     PosLock = true,
     AutoServerHop = true, -- BINAGO: Ginawa kong true
-    ServerHopInterval = 40, -- 40 seconds
+    ServerHopInterval = 30, -- 40 seconds
     MinPlayers = 15, -- BINAGO: 15 pataas ang players
     HitSpeed = 0.01,
     UseMultipleHits = true,
@@ -58,11 +58,11 @@ local function createUI()
 
     local title = Instance.new("TextLabel")
     title.Size = UDim2.new(1, 0, 0, 25)
-    title.Text = "Prime Jelo Delta"
+    title.Text = "UNO KILLING HUB"
     title.TextColor3 = Color3.fromRGB(0, 255, 200)
     title.BackgroundTransparency = 1
     title.Font = Enum.Font.GothamBold
-    title.TextSize = 12
+    title.TextSize = 17
     title.Parent = main
 
     local killsLabel = Instance.new("TextLabel")
@@ -421,5 +421,5 @@ task.spawn(function()
     end
 end)
 
-print("Prime Jelo Delta Loaded!")
+print("Uno Hub Loaded!")
 print("Commands: PJ_Whitelist('name'), PJ_ToggleKill(), PJ_SetSpeed(10)")
