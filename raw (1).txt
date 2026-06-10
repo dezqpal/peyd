@@ -1,0 +1,425 @@
+-- ═══════════════════════════════════════════════════════════════
+-- PRIME JELO - DELTA FIXED EDITION
+-- ═══════════════════════════════════════════════════════════════
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local RS = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local CoreGui = game:GetService("CoreGui")
+local HttpService = game:GetService("HttpService") -- DAGDAG: Para sa server list
+local TeleportService = game:GetService("TeleportService") -- DAGDAG: Para sa pag-lipat
+
+-- ═══════════════════════════════════════════════════════════════
+-- SETTINGS
+-- ═══════════════════════════════════════════════════════════════
+
+local Settings = {
+    KillAll = true,
+    AutoPunch = true,
+    AntiKnockback = true,
+    NaNSize = true,
+    PosLock = true,
+    AutoServerHop = true, -- BINAGO: Ginawa kong true
+    ServerHopInterval = 40, -- 40 seconds
+    MinPlayers = 15, -- BINAGO: 15 pataas ang players
+    HitSpeed = 0.01,
+    UseMultipleHits = true,
+    MuscleEventSpam = true,
+    PunchSpam = true,
+    Whitelist = {}
+}
+
+-- ═══════════════════════════════════════════════════════════════
+-- UI CREATION
+-- ═══════════════════════════════════════════════════════════════
+
+local function createUI()
+    pcall(function()
+        CoreGui:FindFirstChild("PrimeJeloUI"):Destroy()
+    end)
+
+    local gui = Instance.new("ScreenGui")
+    gui.Name = "PrimeJeloUI"
+    gui.Parent = CoreGui
+
+    local main = Instance.new("Frame")
+    main.Size = UDim2.new(0, 180, 0, 140)
+    main.Position = UDim2.new(0.02, 0, 0.3, 0)
+    main.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+    main.BorderSizePixel = 0
+    main.Active = true
+    main.Draggable = true
+    main.Parent = gui
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 10)
+    corner.Parent = main
+
+    local title = Instance.new("TextLabel")
+    title.Size = UDim2.new(1, 0, 0, 25)
+    title.Text = "Prime Jelo Delta"
+    title.TextColor3 = Color3.fromRGB(0, 255, 200)
+    title.BackgroundTransparency = 1
+    title.Font = Enum.Font.GothamBold
+    title.TextSize = 12
+    title.Parent = main
+
+    local killsLabel = Instance.new("TextLabel")
+    killsLabel.Size = UDim2.new(1, 0, 0, 20)
+    killsLabel.Position = UDim2.new(0, 0, 0, 25)
+    killsLabel.Text = "Kills: 0"
+    killsLabel.TextColor3 = Color3.fromRGB(0, 255, 150)
+    killsLabel.BackgroundTransparency = 1
+    killsLabel.Font = Enum.Font.GothamBold
+    killsLabel.TextSize = 14
+    killsLabel.Parent = main
+
+    local targetLabel = Instance.new("TextLabel")
+    targetLabel.Size = UDim2.new(1, 0, 0, 18)
+    targetLabel.Position = UDim2.new(0, 0, 0, 45)
+    targetLabel.Text = "Target: Scanning..."
+    targetLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    targetLabel.BackgroundTransparency = 1
+    targetLabel.Font = Enum.Font.GothamMedium
+    targetLabel.TextSize = 11
+    targetLabel.Parent = main
+
+    local statusLabel = Instance.new("TextLabel")
+    statusLabel.Size = UDim2.new(1, 0, 0, 18)
+    statusLabel.Position = UDim2.new(0, 0, 0, 63)
+    statusLabel.Text = "Status: ACTIVE"
+    statusLabel.TextColor3 = Color3.fromRGB(100, 255, 100)
+    statusLabel.BackgroundTransparency = 1
+    statusLabel.Font = Enum.Font.GothamBold
+    statusLabel.TextSize = 11
+    statusLabel.Parent = main
+
+    local countLabel = Instance.new("TextLabel")
+    countLabel.Size = UDim2.new(1, 0, 0, 18)
+    countLabel.Position = UDim2.new(0, 0, 0, 81)
+    countLabel.Text = "Targets: 0"
+    countLabel.TextColor3 = Color3.fromRGB(170, 170, 255)
+    countLabel.BackgroundTransparency = 1
+    countLabel.Font = Enum.Font.GothamMedium
+    countLabel.TextSize = 11
+    countLabel.Parent = main
+
+    local serverLabel = Instance.new("TextLabel")
+    serverLabel.Size = UDim2.new(1, 0, 0, 18)
+    serverLabel.Position = UDim2.new(0, 0, 0, 99)
+    serverLabel.Text = "Server: Active"
+    serverLabel.TextColor3 = Color3.fromRGB(100, 200, 255)
+    serverLabel.BackgroundTransparency = 1
+    serverLabel.Font = Enum.Font.GothamMedium
+    serverLabel.TextSize = 10
+    serverLabel.Parent = main
+
+    local hopLabel = Instance.new("TextLabel")
+    hopLabel.Size = UDim2.new(1, 0, 0, 18)
+    hopLabel.Position = UDim2.new(0, 0, 0, 117)
+    hopLabel.Text = "Hop: Waiting..."
+    hopLabel.TextColor3 = Color3.fromRGB(255, 170, 0)
+    hopLabel.BackgroundTransparency = 1
+    hopLabel.Font = Enum.Font.GothamMedium
+    hopLabel.TextSize = 10
+    hopLabel.Parent = main
+
+    return {
+        kills = killsLabel,
+        target = targetLabel,
+        status = statusLabel,
+        count = countLabel,
+        server = serverLabel,
+        hop = hopLabel
+    }
+end
+
+local ui = createUI()
+
+-- ═══════════════════════════════════════════════════════════════
+-- EXPLOIT FUNCTIONS
+-- ═══════════════════════════════════════════════════════════════
+
+local function applyNaNSize()
+    if not Settings.NaNSize then return end
+    pcall(function()
+        local rEvents = RS:FindFirstChild("rEvents")
+        if rEvents then
+            local remote = rEvents:FindFirstChild("changeSpeedSizeRemote")
+            if remote then
+                remote:InvokeServer("changeSize", 0/0)
+            end
+        end
+    end)
+end
+
+local function applyAntiKnockback()
+    if not Settings.AntiKnockback then return end
+    pcall(function()
+        local char = LocalPlayer.Character
+        if char then
+            local hrp = char:FindFirstChild("HumanoidRootPart")
+            if hrp then
+                pcall(function()
+                    hrp:FindFirstChild("PJ_AntiKB"):Destroy()
+                    hrp:FindFirstChild("BodyVelocity"):Destroy()
+                end)
+                
+                local bv = Instance.new("BodyVelocity")
+                bv.Name = "PJ_AntiKB"
+                bv.MaxForce = Vector3.new(1e6, 1e6, 1e6)
+                bv.Velocity = Vector3.new(0, 0, 0)
+                bv.P = 5000
+                bv.Parent = hrp
+            end
+        end
+    end)
+end
+
+local function spamPunch()
+    if not Settings.PunchSpam then return end
+    pcall(function()
+        local punch = LocalPlayer.Backpack:FindFirstChild("Punch")
+        if not punch then punch = LocalPlayer.Character:FindFirstChild("Punch") end
+        if punch then
+            punch.Parent = LocalPlayer.Character
+            if punch:FindFirstChild("attackTime") then
+                punch.attackTime.Value = 0
+            end
+            punch:Activate()
+        end
+    end)
+end
+
+local function spamMuscleEvent()
+    if not Settings.MuscleEventSpam then return end
+    pcall(function()
+        if LocalPlayer:FindFirstChild("muscleEvent") then
+            LocalPlayer.muscleEvent:FireServer("punch", "rightHand")
+            LocalPlayer.muscleEvent:FireServer("punch", "leftHand")
+        end
+    end)
+end
+
+local function hitTarget(target)
+    if not target or not target.Character then return end
+    pcall(function()
+        local targetHRP = target.Character:FindFirstChild("HumanoidRootPart")
+        if not targetHRP then return end
+        
+        local char = LocalPlayer.Character
+        if not char then return end
+        
+        local rh = char:FindFirstChild("RightHand")
+        local lh = char:FindFirstChild("LeftHand")
+        local root = char:FindFirstChild("HumanoidRootPart")
+        
+        if rh then
+            firetouchinterest(rh, targetHRP, 0)
+            firetouchinterest(rh, targetHRP, 1)
+        end
+        if lh then
+            firetouchinterest(lh, targetHRP, 0)
+            firetouchinterest(lh, targetHRP, 1)
+        end
+        if Settings.UseMultipleHits and root then
+            firetouchinterest(root, targetHRP, 0)
+            firetouchinterest(root, targetHRP, 1)
+        end
+    end)
+end
+
+-- ═══════════════════════════════════════════════════════════════
+-- MAIN KILL LOOP
+-- ═══════════════════════════════════════════════════════════════
+
+task.spawn(function()
+    while true do
+        task.wait(Settings.HitSpeed)
+        
+        spamPunch()
+        spamMuscleEvent()
+        
+        if not Settings.KillAll then continue end
+        
+        local players = Players:GetPlayers()
+        local validTargets = 0
+        
+        pcall(function()
+            ui.count.Text = "Targets: " .. tostring(#players - 1)
+        end)
+        
+        for _, player in ipairs(players) do
+            if player ~= LocalPlayer and not Settings.Whitelist[player.Name] then
+                validTargets = validTargets + 1
+                
+                pcall(function()
+                    ui.target.Text = "Target: " .. player.Name
+                end)
+                
+                hitTarget(player)
+            end
+        end
+        
+        pcall(function()
+            if validTargets > 0 then
+                ui.status.Text = "Status: HITTING " .. validTargets .. " TARGETS"
+                ui.status.TextColor3 = Color3.fromRGB(255, 100, 100)
+            else
+                ui.status.Text = "Status: SCANNING..."
+                ui.status.TextColor3 = Color3.fromRGB(255, 255, 100)
+            end
+        end)
+    end
+end)
+
+-- ═══════════════════════════════════════════════════════════════
+-- POSITION LOCK LOOP
+-- ═══════════════════════════════════════════════════════════════
+
+task.spawn(function()
+    local islandPos = CFrame.new(-31.8626, 6.0588, 2087.8867)
+    
+    while true do
+        task.wait()
+        
+        if Settings.PosLock then
+            pcall(function()
+                local char = LocalPlayer.Character
+                if char then
+                    local hrp = char:FindFirstChild("HumanoidRootPart")
+                    if hrp then
+                        hrp.CFrame = islandPos
+                    end
+                end
+            end)
+        end
+    end
+end)
+
+-- ═══════════════════════════════════════════════════════════════
+-- ANTI KNOCKBACK LOOP
+-- ═══════════════════════════════════════════════════════════════
+
+task.spawn(function()
+    while true do
+        task.wait(0.1)
+        applyAntiKnockback()
+    end
+end)
+
+-- ═══════════════════════════════════════════════════════════════
+-- KILL COUNTER UPDATE
+-- ═══════════════════════════════════════════════════════════════
+
+task.spawn(function()
+    while true do
+        task.wait(0.3)
+        pcall(function()
+            local stats = LocalPlayer:FindFirstChild("leaderstats")
+            if stats then
+                local kills = stats:FindFirstChild("Kills") or stats:FindFirstChild("Kill")
+                if kills then
+                    ui.kills.Text = "Kills: " .. tostring(kills.Value)
+                end
+            end
+        end)
+    end
+end)
+
+-- ═══════════════════════════════════════════════════════════════
+-- INITIALIZATION
+-- ═══════════════════════════════════════════════════════════════
+
+applyNaNSize()
+applyAntiKnockback()
+
+LocalPlayer.CharacterAdded:Connect(function(char)
+    task.wait(0.3)
+    applyNaNSize()
+    applyAntiKnockback()
+end)
+
+-- ═══════════════════════════════════════════════════════════════
+-- COMMANDS
+-- ═══════════════════════════════════════════════════════════════
+
+_G.PJ_Whitelist = function(name)
+    Settings.Whitelist[name] = true
+    print("Whitelisted: " .. name)
+end
+
+_G.PJ_Unwhitelist = function(name)
+    Settings.Whitelist[name] = nil
+    print("Unwhitelisted: " .. name)
+end
+
+_G.PJ_ToggleKill = function()
+    Settings.KillAll = not Settings.KillAll
+    print("KillAll: " .. tostring(Settings.KillAll))
+end
+
+_G.PJ_SetSpeed = function(ms)
+    Settings.HitSpeed = ms / 1000
+    print("Speed: " .. ms .. "ms")
+end
+
+-- ═══════════════════════════════════════════════════════════════
+-- DAGDAG: AUTO SERVER HOP LOGIC (EVERY 40s, 15+ PLAYERS)
+-- ═══════════════════════════════════════════════════════════════
+
+local function hopToServer()
+    local function fetchServers(cursor)
+        local url = "https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Desc&limit=100"
+        if cursor then url = url .. "&cursor=" .. cursor end
+        return HttpService:JSONDecode(game:HttpGet(url))
+    end
+
+    local potentialServers = {}
+    local result = fetchServers()
+    
+    for i = 1, 3 do -- Mag-check ng hanggang 3 pages para makahanap ng 15+ players
+        if not result or not result.data then break end
+        for _, server in ipairs(result.data) do
+            if server.playing >= Settings.MinPlayers and server.playing < server.maxPlayers and server.id ~= game.JobId then
+                table.insert(potentialServers, server.id)
+            end
+        end
+        if result.nextPageCursor then
+            result = fetchServers(result.nextPageCursor)
+        else
+            break
+        end
+    end
+
+    if #potentialServers > 0 then
+        TeleportService:TeleportToPlaceInstance(game.PlaceId, potentialServers[math.random(1, #potentialServers)])
+    else
+        print("No server with 15+ players found, retrying next cycle...")
+    end
+end
+
+_G.Hop = hopToServer -- Manual hop command
+
+task.spawn(function()
+    local countdown = Settings.ServerHopInterval
+    while true do
+        task.wait(1)
+        if Settings.AutoServerHop then
+            countdown = countdown - 1
+            pcall(function()
+                ui.hop.Text = "Hop in: " .. countdown .. "s (Min: 15p)"
+            end)
+            
+            if countdown <= 0 then
+                pcall(function() ui.hop.Text = "Hopping..." end)
+                hopToServer()
+                countdown = Settings.ServerHopInterval -- Reset kung sakaling pumalya ang teleport
+            end
+        end
+    end
+end)
+
+print("Prime Jelo Delta Loaded!")
+print("Commands: PJ_Whitelist('name'), PJ_ToggleKill(), PJ_SetSpeed(10)")
