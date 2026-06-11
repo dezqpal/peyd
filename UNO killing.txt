@@ -2709,7 +2709,7 @@ Credits:AddLabel(" UNO KILLING SCRIPT").TextSize = 45
 Credits:AddLabel("             ")
 Credits:AddLabel("             ")
 
-Credits:AddButton("Rejoin Madafaka", function()
+Credits:AddButton("Rejoin Madafaka ARAYMO PAKAK KWEKKWEK PISBOL ADOBONG DALAGA", function()
     local TeleportService = game:GetService("TeleportService")
     local Players = game:GetService("Players")
     local LocalPlayer = Players.LocalPlayer
