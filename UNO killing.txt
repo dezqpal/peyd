@@ -2698,6 +2698,168 @@ PetsTab:AddSwitch("Auto Trade All", function(state)
     if state then task.spawn(autoTradeAllLoop) end
 end)
 
+local GiftTab = window:AddTab("A-Gift")
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local RS = game:GetService("ReplicatedStorage")
+
+GiftTab:AddLabel("GIFTING PROTEIN EGGS:").TextSize = 22
+local proteinEggLabel = GiftTab:AddLabel("Protein Eggs: 0"); proteinEggLabel.TextSize = 20
+
+GiftTab:AddLabel("GIFTING TROPICAL SHAKES:").TextSize = 22
+local tropicalShakeLabel = GiftTab:AddLabel("Tropical Shakes: 0"); tropicalShakeLabel.TextSize = 18
+
+local function createPlayerDropdown(title, callback)
+    local drop = GiftTab:AddDropdown(title, callback)
+    for _, plr in ipairs(Players:GetPlayers()) do
+        if plr ~= LocalPlayer then
+            drop:Add(plr.DisplayName)
+        end
+    end
+    Players.PlayerAdded:Connect(function(plr)
+        if plr ~= LocalPlayer then
+            drop:Add(plr.DisplayName)
+        end
+    end)
+    return drop
+end
+
+local selectedEggPlayer = nil
+local eggCount = 0
+
+createPlayerDropdown("Player to Gift Eggs", function(display)
+    for _, plr in ipairs(Players:GetPlayers()) do
+        if plr.DisplayName == display then
+            selectedEggPlayer = plr
+            break
+        end
+    end
+end)
+
+GiftTab:AddTextBox("Amount of Eggs", function(text)
+    eggCount = tonumber(text) or 0
+end)
+
+GiftTab:AddButton("Gift Eggs", function()
+    if not selectedEggPlayer or eggCount <= 0 then return end
+    for _ = 1, eggCount do
+        local egg = LocalPlayer.consumablesFolder:FindFirstChild("Protein Egg")
+        if egg then
+            RS.rEvents.giftRemote:InvokeServer("giftRequest", selectedEggPlayer, egg)
+            task.wait(0.1)
+        end
+    end
+end)
+
+local selectedShakePlayer = nil
+local shakeCount = 0
+
+createPlayerDropdown("Player to Gift Tropical Shakes", function(display)
+    for _, plr in ipairs(Players:GetPlayers()) do
+        if plr.DisplayName == display then
+            selectedShakePlayer = plr
+            break
+        end
+    end
+end)
+
+GiftTab:AddTextBox("Tropical Shakes Gift Amount", function(text)
+    shakeCount = tonumber(text) or 0
+end)
+
+GiftTab:AddButton("Gift Tropical Shakes", function()
+    if not selectedShakePlayer or shakeCount <= 0 then return end
+    for _ = 1, shakeCount do
+        local shake = LocalPlayer.consumablesFolder:FindFirstChild("Tropical Shake")
+        if shake then
+            RS.rEvents.giftRemote:InvokeServer("giftRequest", selectedShakePlayer, shake)
+            task.wait(0.1)
+        end
+    end
+end)
+
+local function updateItemCount()
+    local eggs = 0
+    local shakes = 0
+    local backpack = LocalPlayer.Backpack
+    for _, item in ipairs(backpack:GetChildren()) do
+        if item.Name == "Protein Egg" then
+            eggs += 1
+        elseif item.Name == "Tropical Shake" or item.Name == "Piñas" then
+            shakes += 1
+        end
+    end
+    proteinEggLabel.Text = "Protein Eggs: " .. eggs
+    tropicalShakeLabel.Text = "Tropical Shakes: " .. shakes
+end
+
+task.spawn(function()
+    while true do
+        updateItemCount()
+        task.wait(0.25)
+    end
+end)
+
+local player = LocalPlayer
+
+local itemList = {
+    "Tropical Shake",
+    "Energy Shake",
+    "Protein Bar",
+    "TOUGH Bar",
+    "Protein Shake",
+    "ULTRA Shake",
+    "Energy Bar"
+}
+
+local function formatEventName(name)
+    local parts = {}
+    for word in name:gmatch("%S+") do
+        parts[#parts + 1] = word:lower()
+    end
+    for i = 2, #parts do
+        parts[i] = parts[i]:sub(1,1):upper() .. parts[i]:sub(2)
+    end
+    return table.concat(parts)
+end
+
+local function activateRandomItems(count)
+    local items = {}
+    for _, v in ipairs(itemList) do
+        items[#items + 1] = v
+    end
+    for i = #items, 2, -1 do
+        local j = math.random(i)
+        items[i], items[j] = items[j], items[i]
+    end
+    for i = 1, math.min(count, #items) do
+        local name = items[i]
+        local tool = player.Character:FindFirstChild(name) or player.Backpack:FindFirstChild(name)
+        if tool then
+            player.muscleEvent:FireServer(formatEventName(name), tool)
+        end
+    end
+end
+
+local eatingRunning = false
+
+task.spawn(function()
+    while true do
+        if eatingRunning then
+            activateRandomItems(4)
+        end
+        task.wait(0.5)
+    end
+end)
+
+GiftTab:AddButton("Eat Everything", function(state)
+    eatingRunning = state
+    if state then
+        activateRandomItems(4)
+    end
+end)
+
 
 local Credits = window:AddTab("Credits")
 
@@ -2716,4 +2878,8 @@ Credits:AddButton("Rejoin Madafaka ARAYMO PAKAK KWEKKWEK PISBOL ADOBONG DALAGA",
 
     TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, LocalPlayer)
 end)
+
+Credits:AddLabel("             ")
+Credits:AddLabel("LF SINGLE MOM NA WALANG ANAK PERO MAYAMAN").TextSize = 21
+
 
