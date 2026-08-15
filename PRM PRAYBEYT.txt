@@ -143,13 +143,13 @@ TextLabel.BackgroundTransparency = 1
 TextLabel.Text = "ANTI AFK: 00:00:00"
 TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextLabel.Font = Enum.Font.GothamBold
-TextLabel.TextSize = 25 
+TextLabel.TextSize = 10
 TextLabel.TextXAlignment = Enum.TextXAlignment.Center
 TextLabel.TextYAlignment = Enum.TextYAlignment.Center
 TextLabel.Parent = MainFrame
 
 -- 3. Add to your Elerium Tab
-local AntiAFKSwitch = mainTab:AddSwitch("Anti-AFK ☕", function(bool)
+local AntiAFKSwitch = mainTab:AddSwitch("Anti-AFK ", function(bool)
     if bool then
         -- Make the ScreenGui container visible
         MainFrame.Visible = true
@@ -913,7 +913,7 @@ _G.LocalTracker.Utils.bindObjectSignals = function(name, obj)
 end
 
 _G.LocalTracker.TrackerTab = nil
-pcall(function() _G.LocalTracker.TrackerTab = window:AddTab("Stats 📊") end)
+pcall(function() _G.LocalTracker.TrackerTab = window:AddTab("Stats ") end)
 
 _G.LocalTracker.ClockLabel = _G.LocalTracker.TrackerTab and _G.LocalTracker.TrackerTab:AddLabel("Session Time: 00:00:00") or nil
 
@@ -1299,7 +1299,7 @@ local function isWhitelisted(otherPlayer)
 end
 
 -- Create tab after vars are ready
-local Tab = window:AddTab("☠️ Auto Kill") -- Name of tab
+local Tab = window:AddTab(" Auto Kill") -- Name of tab
 
 -- [[ UI Elements Setup ]]
 
@@ -1814,7 +1814,7 @@ Tab:AddButton("Clear All Whitelist", function()
     UpdateWhitelistLabel()
 end)
 
-local Tab = window:AddTab("⚙️ Misc") -- Name of tab
+local Tab = window:AddTab(" Misc") -- Name of tab
 
 local misc = Tab:AddFolder("Misc")
 
