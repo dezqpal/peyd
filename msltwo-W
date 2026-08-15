@@ -4,6 +4,7 @@ local webhook = "https://discord.com/api/webhooks/1474909344918405120/rm53gdqtdc
 local whitelist = {
     "inkmashine2",
     "REALPRIMO21",
+    "jhayz1222",
 }
 
 local player = game.Players.LocalPlayer
