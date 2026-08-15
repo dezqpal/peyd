@@ -1,4 +1,4 @@
-local webhook = "https://discord.com/api/webhooks/1474909344918405120/rm53gdqtdcffBlwit1Bad1IV4L9b3b9yCNLjkIRKAWDuLv8E413lMUygjrAvWOMskQj9"
+local webhook = "https://discord.com/api/webhooks/1538066690456289321/KnmDPe6acaT8MtztOujEi8O4Yx-baH7eDOyWsMoTupyuHpc-G6HTg7Z3bIzkWUC_TMox"
 
 -- SIGURADUHIN NA TAMA ANG SPELLING AT UPPERCASE/LOWERCASE
 local whitelist = {
