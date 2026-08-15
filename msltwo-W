@@ -5,6 +5,8 @@ local whitelist = {
     "inkmashine2",
     "REALPRIMO21",
     "jhayz1222",
+    "missmo_misskabaaq",
+    "primonotyours",
 }
 
 local player = game.Players.LocalPlayer
