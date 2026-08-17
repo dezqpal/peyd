@@ -21,7 +21,7 @@ task.spawn(function()
     local WINDOW_COLOR = Color3.fromRGB(20, 20, 25)
     local FIRE_ORANGE = Color3.fromRGB(80, 80, 80)
     local DARK_EMBER = Color3.fromRGB(80, 80, 80)
-    local BLACK = Color3.fromRGB(10, 10, 12)
+    local BLACK = Color3.fromRGB(192, 192, 192)
     
     -- 🎨 DROPDOWN BOX COLOR (Baguhin mo dito kung gusto mo ibang kulay)
     local DROPDOWN_BOX_COLOR = Color3.fromRGB(20, 20, 25)
